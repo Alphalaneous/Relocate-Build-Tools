@@ -1,0 +1,31 @@
+{
+	"geode": "3.4.0",
+	"gd": {
+		"win": "2.206",
+		"android": "2.206",
+		"mac": "2.206",
+		"ios": "2.206"
+	},
+	"id": "alphalaneous.relocate_build_tools",
+	"name": "Relocate Build Tools",
+	"version": "v1.0.0",
+	"developer": "Alphalaneous",
+	"description": "Relocates the build tools that are in the editor pause menu to an editor tab",
+	"dependencies": [
+        {
+            "id": "alphalaneous.editortab_api",
+            "version": ">=v1.0.0-alpha.4",
+            "importance": "required"
+        },
+		{
+            "id": "geode.node-ids",
+            "version": ">=v1.13.2",
+            "importance": "required"
+        }
+    ],
+	"links": {
+        "homepage": "https://twitter.com/alphalaneous",
+        "source": "https://github.com/Alphalaneous/Relocate-Build-Tools",
+        "community": "https://discord.gg/Txn2CA5dHF"
+    }
+}
