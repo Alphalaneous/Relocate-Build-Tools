@@ -14,7 +14,7 @@
 	"dependencies": [
         {
             "id": "alphalaneous.editortab_api",
-            "version": ">=v1.0.0-alpha.4",
+            "version": ">=v1.0.0-alpha.6",
             "importance": "required"
         },
 		{
