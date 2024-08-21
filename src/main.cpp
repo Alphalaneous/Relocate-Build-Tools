@@ -119,7 +119,7 @@ $execute {
 
 		auto winSize = cocos2d::CCDirector::get()->getWinSize();
         auto winBottom = cocos2d::CCDirector::get()->getScreenBottom();
-        auto offset = cocos2d::CCPoint(winSize.width / 2 - 5.f, winBottom + ui->m_toolbarHeight / (ui->m_toolbarHeight/92) - 6.f);
+        auto offset = cocos2d::CCPoint(winSize.width / 2 - 5.f, winBottom + 92 - 6.f);
         auto rows = 2;
         auto cols = 7;
 
