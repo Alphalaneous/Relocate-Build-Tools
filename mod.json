@@ -27,5 +27,29 @@
         "homepage": "https://twitter.com/alphalaneous",
         "source": "https://github.com/Alphalaneous/Relocate-Build-Tools",
         "community": "https://discord.gg/Txn2CA5dHF"
-    }
+    },
+	"resources": {
+		"sprites": [
+			"resources/*.png"
+		]
+	},
+	"settings": {
+		"icons": {
+			"name": "Icons",
+			"description": "Icons for the Build Tools Buttons",
+			"type": "string",
+			"default": "Icons & Text",
+			"one-of": [
+				"Icons & Text",
+				"Icons Only",
+				"None"
+			]
+		},
+		"force-button-size": {
+			"name": "Force Button Size",
+			"description": "Forces the button size to stay the same no matter button row and column count",
+			"type": "bool",
+			"default": false
+		}
+	}
 }
