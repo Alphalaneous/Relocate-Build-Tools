@@ -1,3 +1,7 @@
+# 1.0.4
+- Fix touch issue
+- Fix missing regroup icon
+
 # 1.0.3
 - Add optional icons!
 

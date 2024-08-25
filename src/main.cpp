@@ -44,6 +44,12 @@ class $modify(MyEditorUI, EditorUI){
     bool init(LevelEditorLayer* editorLayer) {
 
 		m_fields->m_pauseLayer = EditorPauseLayer::create(editorLayer);
+		m_fields->m_pauseLayer->setTouchEnabled(false);
+		m_fields->m_pauseLayer->setKeyboardEnabled(false);
+		m_fields->m_pauseLayer->setKeypadEnabled(false);
+		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
+
+		handleTouchPriority(this);
 
 		return EditorUI::init(editorLayer);
 	}
@@ -145,9 +151,7 @@ $execute {
         auto arr = CCArray::create();
 
 		EditorPauseLayer* pauseLayer = static_cast<MyEditorUI*>(ui)->m_fields->m_pauseLayer;
-		pauseLayer->setTouchEnabled(false);
-		pauseLayer->setKeyboardEnabled(false);
-		pauseLayer->setKeypadEnabled(false);
+		
 
 		CCNode* smallActionsMenu = pauseLayer->getChildByID("small-actions-menu");
 
