@@ -47,6 +47,11 @@ class $modify(MyEditorUI, EditorUI){
 		m_fields->m_pauseLayer->setTouchEnabled(false);
 		m_fields->m_pauseLayer->setKeyboardEnabled(false);
 		m_fields->m_pauseLayer->setKeypadEnabled(false);
+
+		#ifdef GEODE_IS_ANDROID
+		m_fields->m_pauseLayer->decrementForcePrio()
+		#endif
+
 		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
 
 		handleTouchPriority(this);
@@ -152,7 +157,6 @@ $execute {
 
 		EditorPauseLayer* pauseLayer = static_cast<MyEditorUI*>(ui)->m_fields->m_pauseLayer;
 		
-
 		CCNode* smallActionsMenu = pauseLayer->getChildByID("small-actions-menu");
 
 		for (CCNode* child : CCArrayExt<CCNode*>(smallActionsMenu->getChildren())) {
