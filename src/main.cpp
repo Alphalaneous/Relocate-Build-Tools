@@ -49,7 +49,7 @@ class $modify(MyEditorUI, EditorUI){
 		m_fields->m_pauseLayer->setKeypadEnabled(false);
 
 		#ifdef GEODE_IS_ANDROID
-		m_fields->m_pauseLayer->decrementForcePrio()
+		m_fields->m_pauseLayer->decrementForcePrio();
 		#endif
 
 		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
