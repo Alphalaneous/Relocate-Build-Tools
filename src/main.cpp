@@ -35,31 +35,6 @@ class $modify(EditorPauseLayer){
 	}
 };
 
-class $modify(MyEditorUI, EditorUI){
-
-	struct Fields {
-		Ref<EditorPauseLayer> m_pauseLayer;
-	};
-
-    bool init(LevelEditorLayer* editorLayer) {
-
-		m_fields->m_pauseLayer = EditorPauseLayer::create(editorLayer);
-		m_fields->m_pauseLayer->setTouchEnabled(false);
-		m_fields->m_pauseLayer->setKeyboardEnabled(false);
-		m_fields->m_pauseLayer->setKeypadEnabled(false);
-
-		#ifdef GEODE_IS_ANDROID
-		m_fields->m_pauseLayer->decrementForcePrio();
-		#endif
-
-		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
-
-		handleTouchPriority(this);
-
-		return EditorUI::init(editorLayer);
-	}
-};
-
 std::map<std::string, std::string> labelToIcon = {
 	{"Reset\nScroll", "ResetScroll"},
 	{"Create\nLoop", "CreateLoop"},
@@ -149,11 +124,36 @@ void rebuildButtons(CCArray* arr) {
 	}
 }
 
-$execute {
+class $modify(MyEditorUI, EditorUI){
 
-	EditorTabs::get()->registerTab(TabType::EDIT, "build-tools"_spr, [](EditorUI* ui, CCMenuItemToggler* toggler) -> CCNode* {
+	struct Fields {
+		Ref<EditorPauseLayer> m_pauseLayer;
+	};
 
-        auto arr = CCArray::create();
+    bool init(LevelEditorLayer* editorLayer) {
+
+		m_fields->m_pauseLayer = EditorPauseLayer::create(editorLayer);
+		m_fields->m_pauseLayer->setTouchEnabled(false);
+		m_fields->m_pauseLayer->setKeyboardEnabled(false);
+		m_fields->m_pauseLayer->setKeypadEnabled(false);
+
+		#ifdef GEODE_IS_ANDROID
+		m_fields->m_pauseLayer->decrementForcePrio();
+		#endif
+
+		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
+
+		handleTouchPriority(this);
+
+		if (!EditorUI::init(editorLayer)) return false;
+
+		EditorTabs::get()->addTab(this, TabType::EDIT, "build-tools"_spr, create_tab_callback(MyEditorUI::createBuildTools));
+
+		return true;
+	}
+
+	CCNode* createBuildTools(EditorUI* ui, CCMenuItemToggler* toggler) {
+		auto arr = CCArray::create();
 
 		EditorPauseLayer* pauseLayer = static_cast<MyEditorUI*>(ui)->m_fields->m_pauseLayer;
 		
@@ -188,16 +188,16 @@ $execute {
 
 		rebuildButtons(arr);
 
-        CCLabelBMFont* textLabelOn = CCLabelBMFont::create("B", "bigFont.fnt");
-        textLabelOn->setScale(0.4f);
-        CCLabelBMFont* textLabelOff = CCLabelBMFont::create("B", "bigFont.fnt");
-        textLabelOff->setScale(0.4f);
+		CCLabelBMFont* textLabelOn = CCLabelBMFont::create("B", "bigFont.fnt");
+		textLabelOn->setScale(0.4f);
+		CCLabelBMFont* textLabelOff = CCLabelBMFont::create("B", "bigFont.fnt");
+		textLabelOff->setScale(0.4f);
 
-        EditorTabUtils::setTabIcons(toggler, textLabelOn, textLabelOff);
+		EditorTabUtils::setTabIcons(toggler, textLabelOn, textLabelOff);
 
 		auto winSize = cocos2d::CCDirector::get()->getWinSize();
-        auto winBottom = cocos2d::CCDirector::get()->getScreenBottom();
-        auto offset = cocos2d::CCPoint(winSize.width / 2 - 5.f, winBottom + 92 - 6.f);
+		auto winBottom = cocos2d::CCDirector::get()->getScreenBottom();
+		auto offset = cocos2d::CCPoint(winSize.width / 2 - 5.f, winBottom + 92 - 6.f);
 
 		EditButtonBar* buttonBar;
 		if (Mod::get()->getSettingValue<bool>("force-button-size")) {
@@ -210,10 +210,11 @@ $execute {
 		}
 		else {
 			auto rows = GameManager::get()->getIntGameVariable("0050");
-        	auto cols = GameManager::get()->getIntGameVariable("0049");
+			auto cols = GameManager::get()->getIntGameVariable("0049");
 			buttonBar = EditButtonBar::create(arr, offset, 0, false, cols, rows);
 		}
 
-        return buttonBar;
-    });
-}
+		return buttonBar;
+	}
+};
+
