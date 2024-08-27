@@ -1,3 +1,6 @@
+# 1.0.5
+- Change EditTab API usage
+
 # 1.0.4
 - Fix touch issue
 - Fix missing regroup icon
