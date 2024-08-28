@@ -1,3 +1,6 @@
+# 1.0.6
+- Change EditTab API usage again
+
 # 1.0.5
 - Change EditTab API usage
 
