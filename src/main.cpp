@@ -6,7 +6,22 @@
 
 using namespace geode::prelude;
 
-class $modify(EditorPauseLayer){
+class $modify(MyEditorPauseLayer, EditorPauseLayer){
+
+	static void onModify(auto& self) {
+        (void) self.setHookPriority("EditorPauseLayer::onResume", -10000); 
+    }
+
+	struct Fields {
+		bool m_noResume = false;
+	};
+
+    void onResume(cocos2d::CCObject* sender) {
+		if (m_fields->m_noResume) return;
+
+		EditorPauseLayer::onResume(sender);
+	}
+
 
     bool init(LevelEditorLayer* p0){
 		if (!EditorPauseLayer::init(p0)) return false;
@@ -136,12 +151,14 @@ class $modify(MyEditorUI, EditorUI){
 		m_fields->m_pauseLayer->setTouchEnabled(false);
 		m_fields->m_pauseLayer->setKeyboardEnabled(false);
 		m_fields->m_pauseLayer->setKeypadEnabled(false);
+		static_cast<MyEditorPauseLayer*>(m_fields->m_pauseLayer.data())->m_fields->m_noResume = true;
 
 		#ifdef GEODE_IS_ANDROID
 		m_fields->m_pauseLayer->decrementForcePrio();
 		#endif
 
 		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
+		CCKeyboardDispatcher::get()->forceRemoveDelegate(m_fields->m_pauseLayer);
 
 		handleTouchPriority(this);
 
