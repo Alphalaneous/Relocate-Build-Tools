@@ -158,7 +158,6 @@ class $modify(MyEditorUI, EditorUI){
 		#endif
 
 		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
-		CCKeyboardDispatcher::get()->forceRemoveDelegate(m_fields->m_pauseLayer);
 
 		handleTouchPriority(this);
 
