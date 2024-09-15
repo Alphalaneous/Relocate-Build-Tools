@@ -1,3 +1,6 @@
+# 1.0.8
+- Fix lock button issues
+
 # 1.0.7
 - Fix keybinding issue
 
