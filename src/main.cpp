@@ -31,6 +31,8 @@ class $modify(GJScaleControl) {
     }
 };
 
+#ifndef GEODE_IS_ARM_MAC
+
 class $modify(GJTransformControl) {
 
     struct Fields {
@@ -53,6 +55,8 @@ class $modify(GJTransformControl) {
         }
     }
 };
+
+#endif
 
 class $modify(MyEditorPauseLayer, EditorPauseLayer){
 
