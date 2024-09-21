@@ -1,3 +1,6 @@
+# 1.0.9
+- Fix prio issues
+
 # 1.0.8
 - Fix lock button issues
 

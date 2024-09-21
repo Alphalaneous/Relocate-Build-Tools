@@ -3,60 +3,11 @@
 #include <Geode/modify/EditorPauseLayer.hpp>
 #include <Geode/modify/GJScaleControl.hpp>
 #include <Geode/modify/GJTransformControl.hpp>
+#include <Geode/modify/GJRotationControl.hpp>
 
 #include <alphalaneous.editortab_api/include/EditorTabs.hpp>
 
 using namespace geode::prelude;
-
-class $modify(GJScaleControl) {
-
-    struct Fields {
-        bool m_isPrioFixed = false;
-    };
-
-    void loadValues(GameObject* p0, cocos2d::CCArray* p1, gd::unordered_map<int, GameObjectEditorState>& p2) {
-
-        GJScaleControl::loadValues(p0, p1, p2);
-
-        if (!m_fields->m_isPrioFixed) {
-            if (CCMenu* scaleButtonMenu = typeinfo_cast<CCMenu*>(m_scaleLockButton->getParent())) {
-                if (auto delegate = typeinfo_cast<CCTouchDelegate*>(scaleButtonMenu)) {
-                    if (auto handler = CCTouchDispatcher::get()->findHandler(delegate)) {
-                        CCTouchDispatcher::get()->setPriority(handler->getPriority()-1, handler->getDelegate());
-                    }
-                }
-            }
-            m_fields->m_isPrioFixed = true;
-        }
-    }
-};
-
-#ifndef GEODE_IS_ARM_MAC
-
-class $modify(GJTransformControl) {
-
-    struct Fields {
-        bool m_isPrioFixed = false;
-    };
-
-    void updateButtons(bool p0, bool p1) {
-
-        GJTransformControl::updateButtons(p0, p1);
-
-        if (!m_fields->m_isPrioFixed) {
-            if (CCMenu* warpButtonMenu = typeinfo_cast<CCMenu*>(m_warpLockButton->getParent())) {
-                if (auto delegate = typeinfo_cast<CCTouchDelegate*>(warpButtonMenu)) {
-                    if (auto handler = CCTouchDispatcher::get()->findHandler(delegate)) {
-                        CCTouchDispatcher::get()->setPriority(handler->getPriority()-1, handler->getDelegate());
-                    }
-                }
-            }
-            m_fields->m_isPrioFixed = true;
-        }
-    }
-};
-
-#endif
 
 class $modify(MyEditorPauseLayer, EditorPauseLayer){
 
@@ -205,13 +156,16 @@ class $modify(MyEditorUI, EditorUI){
 		m_fields->m_pauseLayer->setKeypadEnabled(false);
 		static_cast<MyEditorPauseLayer*>(m_fields->m_pauseLayer.data())->m_fields->m_noResume = true;
 
-		#ifdef GEODE_IS_ANDROID
-		m_fields->m_pauseLayer->decrementForcePrio();
-		#endif
-
+		CCTouchDispatcher::get()->unregisterForcePrio(m_fields->m_pauseLayer);
 		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
 
-		handleTouchPriority(this);
+		queueInMainThread([this] {
+			if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->m_pauseLayer.data())) {
+				if (auto handler = CCTouchDispatcher::get()->findHandler(delegate)) {
+					CCTouchDispatcher::get()->setPriority(100000, handler->getDelegate());
+				}
+			}
+		});
 
 		if (!EditorUI::init(editorLayer)) return false;
 
