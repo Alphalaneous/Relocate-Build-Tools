@@ -25,7 +25,6 @@ class $modify(MyEditorPauseLayer, EditorPauseLayer){
 		EditorPauseLayer::onResume(sender);
 	}
 
-
     bool init(LevelEditorLayer* p0){
 		if (!EditorPauseLayer::init(p0)) return false;
 
@@ -112,15 +111,15 @@ void rebuildButtons(CCArray* arr) {
 		child->setVisible(true);
 		CCSize childSize = child->getContentSize();
 		
-		if (ButtonSprite* buttonSprite = getChildOfType<ButtonSprite>(child, 0)) {
+		if (ButtonSprite* buttonSprite = child->getChildByType<ButtonSprite>(0)) {
 			buttonSprite->setContentSize({40, 40});
 			buttonSprite->setScale(1);
 			buttonSprite->setPosition({childSize.width/2, childSize.height/2});
 
-			if (CCScale9Sprite* bg = getChildOfType<CCScale9Sprite>(buttonSprite, 0)) {
+			if (CCScale9Sprite* bg = buttonSprite->getChildByType<CCScale9Sprite>(0)) {
 				bg->removeFromParent();
 			}
-			if (CCLabelBMFont* label = getChildOfType<CCLabelBMFont>(buttonSprite, 0)) {
+			if (CCLabelBMFont* label = buttonSprite->getChildByType<CCLabelBMFont>(0)) {
 				label->setScale(0.25f);
 				label->setAlignment(CCTextAlignment::kCCTextAlignmentCenter);
 				label->setPosition({childSize.width/2, childSize.height/2});
@@ -193,8 +192,8 @@ class $modify(MyEditorUI, EditorUI){
 
 		for(CCNode* child : CCArrayExt<CCNode*>(actionsMenu->getChildren())){
 			bool foundExtras = false;
-			if(ButtonSprite* buttonSprite = getChildOfType<ButtonSprite>(child, 0)) {
-				if(CCLabelBMFont* label = getChildOfType<CCLabelBMFont>(buttonSprite, 0)) {
+			if(ButtonSprite* buttonSprite = child->getChildByType<ButtonSprite>(0)) {
+				if(CCLabelBMFont* label = buttonSprite->getChildByType<CCLabelBMFont>(0)) {
 					std::string labelText = std::string(label->getString());
 					if(labelText == "Create\nExtras"){
 						extrasNode = child;
