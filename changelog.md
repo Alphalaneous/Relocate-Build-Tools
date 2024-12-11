@@ -1,3 +1,6 @@
+# 1.0.11
+- Android32 Support
+
 # 1.0.9
 - Fix prio issues
 
