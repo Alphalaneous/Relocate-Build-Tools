@@ -1,5 +1,5 @@
 {
-	"geode": "4.0.1",
+	"geode": "4.2.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -8,7 +8,7 @@
 	},
 	"id": "alphalaneous.relocate_build_tools",
 	"name": "Relocate Build Tools",
-	"version": "v1.0.11",
+	"version": "v1.0.12",
 	"developer": "Alphalaneous",
 	"description": "Relocates the build tools that are in the editor pause menu to an editor tab",
 	"dependencies": [
@@ -51,5 +51,8 @@
 			"type": "bool",
 			"default": false
 		}
-	}
+	},
+	"tags": [
+		"editor"
+	]
 }
