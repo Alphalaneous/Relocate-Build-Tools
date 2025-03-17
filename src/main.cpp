@@ -25,28 +25,28 @@ class $modify(MyEditorPauseLayer, EditorPauseLayer){
 		EditorPauseLayer::onResume(sender);
 	}
 
-    bool init(LevelEditorLayer* p0){
+    bool init(LevelEditorLayer* p0) {
 		if (!EditorPauseLayer::init(p0)) return false;
 
-		CCNode* smallActionsMenu = getChildByID("small-actions-menu");
-		smallActionsMenu->getLayout()->ignoreInvisibleChildren(true);
-
-		for (CCNode* child : CCArrayExt<CCNode*>(smallActionsMenu->getChildren())) {
-			child->setVisible(false);
+		if (CCNode* smallActionsMenu = getChildByID("small-actions-menu")) {
+			smallActionsMenu->getLayout()->ignoreInvisibleChildren(true);
+			for (CCNode* child : CCArrayExt<CCNode*>(smallActionsMenu->getChildren())) {
+				child->setVisible(false);
+			}
+			smallActionsMenu->updateLayout();
 		}
 
-		CCNode* actionsMenu = getChildByID("actions-menu");
-		actionsMenu->getLayout()->ignoreInvisibleChildren(true);
+		if (CCNode* actionsMenu = getChildByID("actions-menu")) {
+			actionsMenu->getLayout()->ignoreInvisibleChildren(true);
 
-		for (CCNode* child : CCArrayExt<CCNode*>(actionsMenu->getChildren())) {
-			child->setVisible(false);
+			for (CCNode* child : CCArrayExt<CCNode*>(actionsMenu->getChildren())) {
+				child->setVisible(false);
+			}
+			if (CCNode* keys = actionsMenu->getChildByID("keys-button")) {
+				keys->setVisible(true);
+			}
+			actionsMenu->updateLayout();
 		}
-		if (CCNode* keys = actionsMenu->getChildByID("keys-button")) {
-			keys->setVisible(true);
-		}
-
-		smallActionsMenu->updateLayout();
-		actionsMenu->updateLayout();
 
 		return true;
 	}
@@ -71,7 +71,7 @@ std::map<std::string, std::string> labelToIcon = {
 	{"Uncheck\nPortals", "UncheckPortals"},
 };
 
-CCSprite* addIcon(CCNode* node, CCLabelBMFont* label){
+CCSprite* addIcon(CCNode* node, CCLabelBMFont* label) {
 
 	std::string labelText = std::string(label->getString());
 
@@ -104,9 +104,7 @@ CCSprite* addIcon(CCNode* node, CCLabelBMFont* label){
 
 void rebuildButtons(CCArray* arr) {
 
-	CCNode* extrasNode;
-
-	for (CCNode* child : CCArrayExt<CCNode*>(arr)){
+	for (CCNode* child : CCArrayExt<CCNode*>(arr)) {
 		child->setContentSize({40, 40});
 		child->setVisible(true);
 		CCSize childSize = child->getContentSize();
@@ -141,7 +139,7 @@ void rebuildButtons(CCArray* arr) {
 	}
 }
 
-class $modify(MyEditorUI, EditorUI){
+class $modify(MyEditorUI, EditorUI) {
 
 	struct Fields {
 		Ref<EditorPauseLayer> m_pauseLayer;
@@ -149,14 +147,16 @@ class $modify(MyEditorUI, EditorUI){
 
     bool init(LevelEditorLayer* editorLayer) {
 
-		m_fields->m_pauseLayer = EditorPauseLayer::create(editorLayer);
-		m_fields->m_pauseLayer->setTouchEnabled(false);
-		m_fields->m_pauseLayer->setKeyboardEnabled(false);
-		m_fields->m_pauseLayer->setKeypadEnabled(false);
-		static_cast<MyEditorPauseLayer*>(m_fields->m_pauseLayer.data())->m_fields->m_noResume = true;
+		auto fields = m_fields.self();
 
-		CCTouchDispatcher::get()->unregisterForcePrio(m_fields->m_pauseLayer);
-		CCTouchDispatcher::get()->removeDelegate(m_fields->m_pauseLayer);
+		fields->m_pauseLayer = EditorPauseLayer::create(editorLayer);
+		fields->m_pauseLayer->setTouchEnabled(false);
+		fields->m_pauseLayer->setKeyboardEnabled(false);
+		fields->m_pauseLayer->setKeypadEnabled(false);
+		static_cast<MyEditorPauseLayer*>(fields->m_pauseLayer.data())->m_fields->m_noResume = true;
+
+		CCTouchDispatcher::get()->unregisterForcePrio(fields->m_pauseLayer);
+		CCTouchDispatcher::get()->removeDelegate(fields->m_pauseLayer);
 
 		queueInMainThread([this] {
 			if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->m_pauseLayer.data())) {
@@ -178,36 +178,26 @@ class $modify(MyEditorUI, EditorUI){
 
 		EditorPauseLayer* pauseLayer = static_cast<MyEditorUI*>(ui)->m_fields->m_pauseLayer;
 		
-		CCNode* smallActionsMenu = pauseLayer->getChildByID("small-actions-menu");
-
-		for (CCNode* child : CCArrayExt<CCNode*>(smallActionsMenu->getChildren())) {
-			arr->addObject(child);
-		}
-		smallActionsMenu->removeAllChildrenWithCleanup(false);
-
-		CCNode* actionsMenu = pauseLayer->getChildByID("actions-menu");
-		actionsMenu->removeChildByID("keys-button");
-
-		CCNode* extrasNode;
-
-		for(CCNode* child : CCArrayExt<CCNode*>(actionsMenu->getChildren())){
-			bool foundExtras = false;
-			if(ButtonSprite* buttonSprite = child->getChildByType<ButtonSprite>(0)) {
-				if(CCLabelBMFont* label = buttonSprite->getChildByType<CCLabelBMFont>(0)) {
-					std::string labelText = std::string(label->getString());
-					if(labelText == "Create\nExtras"){
-						extrasNode = child;
-						foundExtras = true;
-					}
-				}
+		if (CCNode* smallActionsMenu = pauseLayer->getChildByID("small-actions-menu")) {
+			for (CCNode* child : CCArrayExt<CCNode*>(smallActionsMenu->getChildren())) {
+				arr->addObject(child);
 			}
-			if (!foundExtras) arr->addObject(child);
+			smallActionsMenu->removeAllChildrenWithCleanup(false);
 		}
 
-		arr->addObject(extrasNode);
-		actionsMenu->removeAllChildrenWithCleanup(false);
+		if (CCNode* actionsMenu = pauseLayer->getChildByID("actions-menu")) {
+			actionsMenu->removeChildByID("keys-button");
 
-		rebuildButtons(arr);
+			for (CCNode* child : CCArrayExt<CCNode*>(actionsMenu->getChildren())) {
+				arr->addObject(child);
+			}
+
+			actionsMenu->removeAllChildrenWithCleanup(false);
+		}
+
+		if (arr->count() > 0) {
+			rebuildButtons(arr);
+		}
 
 		CCLabelBMFont* textLabelOn = CCLabelBMFont::create("B", "bigFont.fnt");
 		textLabelOn->setScale(0.4f);
