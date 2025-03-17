@@ -83,13 +83,13 @@ CCSprite* addIcon(CCNode* node, CCLabelBMFont* label) {
 		iconTexture = fmt::format("o_{}.png"_spr, labelToIcon[labelText]);
 		iconsOnly = true;
 	}
-	else if (Mod::get()->getSettingValue<std::string>("icons") == "Icons & Text"){
+	else if (Mod::get()->getSettingValue<std::string>("icons") == "Icons & Text") {
 		iconTexture = fmt::format("u_{}.png"_spr, labelToIcon[labelText]);
 	}
 
-	if (CCSprite* spr = CCSprite::create(iconTexture.c_str())){
+	if (CCSprite* spr = CCSprite::create(iconTexture.c_str())) {
 		spr->setZOrder(1);
-		if (!iconsOnly){
+		if (!iconsOnly) {
 			spr->setColor({0, 0, 0});
 			spr->setOpacity(96);
 		}
@@ -125,7 +125,7 @@ void rebuildButtons(CCArray* arr) {
 				std::replace(labelText.begin(), labelText.end(), ' ', '\n');
 				label->setString(labelText.c_str());
 				label->setZOrder(2);
-				if (Mod::get()->getSettingValue<std::string>("icons") != "None"){
+				if (Mod::get()->getSettingValue<std::string>("icons") != "None") {
 					if (addIcon(buttonSprite, label) && Mod::get()->getSettingValue<std::string>("icons") == "Icons Only") {
 						label->setVisible(false);
 					}
@@ -191,7 +191,6 @@ class $modify(MyEditorUI, EditorUI) {
 			for (CCNode* child : CCArrayExt<CCNode*>(actionsMenu->getChildren())) {
 				arr->addObject(child);
 			}
-
 			actionsMenu->removeAllChildrenWithCleanup(false);
 		}
 
