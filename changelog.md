@@ -1,3 +1,6 @@
+# 1.0.14
+- iOS support
+
 # 1.0.13
 - Make it a little safer, what was I on?
 
